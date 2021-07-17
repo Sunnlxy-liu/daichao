@@ -6,9 +6,9 @@ class LootPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Web详情页"),
-      ),
+      // appBar: AppBar(
+      //   title: Text("Web详情页"),
+      // ),
       body: Container(
         child: Stack(
           children: [
