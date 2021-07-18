@@ -5,6 +5,8 @@ import 'package:daichao/model/loan_list_model.dart';
 import 'package:daichao/model/loan_type_model.dart';
 import 'package:daichao/model/luck_users_model.dart';
 import 'package:daichao/pages/loan_page_view/widgets/loan_item_wgt.dart';
+import 'package:daichao/pages/welcome_page.dart';
+import 'package:daichao/utils/navigator_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:daichao/common/bloc/bloc_builder_wgt.dart';
 import 'package:daichao/pages/main_page_view/widget/article_item_wgt.dart';
@@ -325,7 +327,11 @@ class HomePage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          NavigatorUtils.pushPage(
+                            targPage: WelcomePage(),
+                          );
+                        },
                         child: Container(
                           height: 30,
                           margin: EdgeInsets.only(top: 17),
