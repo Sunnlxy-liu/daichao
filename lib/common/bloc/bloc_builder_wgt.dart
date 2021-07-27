@@ -60,7 +60,7 @@ class BlocConsumerWgt<B extends BaseBloc> extends StatelessWidget {
         }
         if (state is LoadingToastState) {
           // 显示加载中弹窗
-          future = ToastUtils.showLoadingToast();
+          future = ToastUtils.showLoadingToast(msg: state.loadingText);
         }
         listener?.call(context, state);
       },

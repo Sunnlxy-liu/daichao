@@ -1,3 +1,4 @@
+import 'package:daichao/blocs/mine/suggest_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:daichao/utils/colors_utils.dart';
 import 'package:daichao/utils/form_utils.dart';
@@ -10,6 +11,7 @@ class MineFeedbackPage extends StatefulWidget {
 }
 
 class _MineFeedbackPageState extends State<MineFeedbackPage> {
+  SuggestBloc suggestBloc = SuggestBloc();
   TextEditingController _suggestController = TextEditingController();
   bool _isSuggestValidated = false;
   @override
@@ -50,7 +52,13 @@ class _MineFeedbackPageState extends State<MineFeedbackPage> {
                     style: TextStyle(fontSize: 16, letterSpacing: 1),
                   ),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22.5)),
-                  onPressed: () {},
+                  onPressed: () {
+                    suggestBloc.add(
+                      AddSuggestEvent(
+                        content: _suggestController.text.replaceAll(" ", ""),
+                      ),
+                    );
+                  },
                 ),
               ),
             )

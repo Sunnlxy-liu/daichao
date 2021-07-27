@@ -1,8 +1,6 @@
 import 'dart:convert';
 import "package:intl/intl.dart";
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:daichao/widgets/pop_route.dart';
 
 class Utils {
   static String getImage(String sImageName) {

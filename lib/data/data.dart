@@ -1,5 +1,14 @@
+import 'package:daichao/blocs/mine/user_bloc.dart';
+import 'package:daichao/data/repository/user_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+List<BlocProvider> providers = [
+  // 全局bloc，用户相关的bloc
+  BlocProvider<UserBloc>(
+    create: (BuildContext context) => UserRespository().userBloc,
+  ),
+];
 // 首页Global
 final GlobalKey mainMenusKey = GlobalKey();
 // 路由Global

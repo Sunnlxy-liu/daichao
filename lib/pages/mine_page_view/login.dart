@@ -109,8 +109,9 @@ class _LoginPageState extends State<LoginPage> {
                 "account": _phoneController.text.replaceAll(" ", ""),
                 "password": _password,
               });
-              // UserRespository().doLogin(model);
+              UserRespository().doLogin(model);
               ToastUtils.showToastMsg("登录成功");
+              Navigator.of(context).pop();
             } catch (error) {
               ToastUtils.showToastMsg("登录失败，请重试");
             } finally {

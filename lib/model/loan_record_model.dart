@@ -48,70 +48,70 @@ class LoanRecordModel extends BaseModel {
 }
 
 class MyloanList {
-  final int loan_id;
-  final int loan_amount;
-  final int loan_date;
-  final double repay_amount;
-  final int repay_time;
-  final String approval_status;
-  final int checked_time;
+  final int loanId;
+  final int loanAmount;
   final int createtime;
+  final int loanDate;
+  final double repayAmount;
+  final int repayTime;
+  final String approvalStatus;
+  final int checkedTime;
   MyloanList({
-    this.loan_id,
-    this.loan_amount,
-    this.loan_date,
-    this.repay_amount,
-    this.repay_time,
-    this.approval_status,
-    this.checked_time,
+    this.loanId,
+    this.loanAmount,
     this.createtime,
+    this.loanDate,
+    this.repayAmount,
+    this.repayTime,
+    this.approvalStatus,
+    this.checkedTime,
   });
 
   MyloanList copyWith({
-    int loan_id,
-    int loan_amount,
-    int loan_date,
-    double repay_amount,
-    int repay_time,
-    String approval_status,
-    int checked_time,
+    int loanId,
+    int loanAmount,
     int createtime,
+    int loanDate,
+    double repayAmount,
+    int repayTime,
+    String approvalStatus,
+    int checkedTime,
   }) {
     return MyloanList(
-      loan_id: loan_id ?? this.loan_id,
-      loan_amount: loan_amount ?? this.loan_amount,
-      loan_date: loan_date ?? this.loan_date,
-      repay_amount: repay_amount ?? this.repay_amount,
-      repay_time: repay_time ?? this.repay_time,
-      approval_status: approval_status ?? this.approval_status,
-      checked_time: checked_time ?? this.checked_time,
+      loanId: loanId ?? this.loanId,
+      loanAmount: loanAmount ?? this.loanAmount,
       createtime: createtime ?? this.createtime,
+      loanDate: loanDate ?? this.loanDate,
+      repayAmount: repayAmount ?? this.repayAmount,
+      repayTime: repayTime ?? this.repayTime,
+      approvalStatus: approvalStatus ?? this.approvalStatus,
+      checkedTime: checkedTime ?? this.checkedTime,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'loan_id': loan_id,
-      'loan_amount': loan_amount,
-      'loan_date': loan_date,
-      'repay_amount': repay_amount,
-      'repay_time': repay_time,
-      'approval_status': approval_status,
-      'checked_time': checked_time,
+      'loanId': loanId,
+      'loanAmount': loanAmount,
       'createtime': createtime,
+      'loanDate': loanDate,
+      'repayAmount': repayAmount,
+      'repayTime': repayTime,
+      'approvalStatus': approvalStatus,
+      'checkedTime': checkedTime,
     };
   }
 
   factory MyloanList.fromMap(Map<String, dynamic> map) {
     return MyloanList(
-      loan_id: map['loan_id']?.toInt(),
-      loan_amount: map['loan_amount']?.toInt(),
-      loan_date: map['loan_date']?.toInt(),
-      repay_amount: map['repay_amount']?.toDouble(),
-      repay_time: map['repay_time']?.toInt(),
-      approval_status: map['approval_status'],
-      checked_time: map['checked_time']?.toInt(),
+      loanId: map['loanId']?.toInt(),
+      loanAmount: map['loanAmount']?.toInt(),
       createtime: map['createtime']?.toInt(),
+      loanDate: map['loanDate']?.toInt(),
+      repayAmount: map['repayAmount']?.toDouble(),
+      repayTime: map['repayTime']?.toInt(),
+      approvalStatus: map['approvalStatus'],
+      checkedTime: map['checkedTime']?.toInt(),
     );
   }
 
@@ -121,7 +121,7 @@ class MyloanList {
 
   @override
   String toString() {
-    return 'MyloanList(loan_id: $loan_id, loan_amount: $loan_amount, loan_date: $loan_date, repay_amount: $repay_amount, repay_time: $repay_time, approval_status: $approval_status, checked_time: $checked_time,createtime:$createtime)';
+    return 'MyloanList(loanId: $loanId, loanAmount: $loanAmount, createtime: $createtime, loanDate: $loanDate, repayAmount: $repayAmount, repayTime: $repayTime, approvalStatus: $approvalStatus, checkedTime: $checkedTime)';
   }
 
   @override
@@ -129,25 +129,25 @@ class MyloanList {
     if (identical(this, other)) return true;
 
     return other is MyloanList &&
-        other.loan_id == loan_id &&
-        other.loan_amount == loan_amount &&
-        other.loan_date == loan_date &&
-        other.repay_amount == repay_amount &&
-        other.repay_time == repay_time &&
-        other.approval_status == approval_status &&
-        other.checked_time == checked_time &&
-        other.createtime == createtime;
+        other.loanId == loanId &&
+        other.loanAmount == loanAmount &&
+        other.createtime == createtime &&
+        other.loanDate == loanDate &&
+        other.repayAmount == repayAmount &&
+        other.repayTime == repayTime &&
+        other.approvalStatus == approvalStatus &&
+        other.checkedTime == checkedTime;
   }
 
   @override
   int get hashCode {
-    return loan_id.hashCode ^
-        loan_amount.hashCode ^
-        loan_date.hashCode ^
-        repay_amount.hashCode ^
-        repay_time.hashCode ^
-        approval_status.hashCode ^
-        checked_time.hashCode ^
-        createtime.hashCode;
+    return loanId.hashCode ^
+        loanAmount.hashCode ^
+        createtime.hashCode ^
+        loanDate.hashCode ^
+        repayAmount.hashCode ^
+        repayTime.hashCode ^
+        approvalStatus.hashCode ^
+        checkedTime.hashCode;
   }
 }

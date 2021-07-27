@@ -140,10 +140,14 @@ class LoanPage extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: ListView(
-                      children: list.map((e) {
-                        return LoanItemWgt(e);
-                      }).toList(),
+                    child: ListView.builder(
+                      padding: EdgeInsets.all(0),
+                      shrinkWrap: true, //范围内进行包裹（内容多高ListView就多高）
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: list.length,
+                      itemBuilder: (context, index) {
+                        return LoanItemWgt(list[index], isLast: index + 1 == list.length);
+                      },
                     ),
                   ),
                 ],

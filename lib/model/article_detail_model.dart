@@ -49,7 +49,7 @@ class ArticleDetailModel extends BaseModel {
 class ArticleDetail {
   final int id;
   final int weigh;
-  final int articletypeId;
+  final int articletype_id;
   final String title;
   final String description;
   final String articlecontent;
@@ -57,13 +57,12 @@ class ArticleDetail {
   final int updatetime;
   final String status;
   final int views;
-  final String author;
-  final String thumbImage;
-  final String thumbImages;
+  final String thumb_image;
+  final String thumb_images;
   ArticleDetail({
     this.id,
     this.weigh,
-    this.articletypeId,
+    this.articletype_id,
     this.title,
     this.description,
     this.articlecontent,
@@ -71,15 +70,14 @@ class ArticleDetail {
     this.updatetime,
     this.status,
     this.views,
-    this.author,
-    this.thumbImage,
-    this.thumbImages,
+    this.thumb_image,
+    this.thumb_images,
   });
 
   ArticleDetail copyWith({
     int id,
     int weigh,
-    int articletypeId,
+    int articletype_id,
     String title,
     String description,
     String articlecontent,
@@ -87,14 +85,13 @@ class ArticleDetail {
     int updatetime,
     String status,
     int views,
-    String author,
-    String thumbImage,
-    String thumbImages,
+    String thumb_image,
+    String thumb_images,
   }) {
     return ArticleDetail(
       id: id ?? this.id,
       weigh: weigh ?? this.weigh,
-      articletypeId: articletypeId ?? this.articletypeId,
+      articletype_id: articletype_id ?? this.articletype_id,
       title: title ?? this.title,
       description: description ?? this.description,
       articlecontent: articlecontent ?? this.articlecontent,
@@ -102,9 +99,8 @@ class ArticleDetail {
       updatetime: updatetime ?? this.updatetime,
       status: status ?? this.status,
       views: views ?? this.views,
-      author: author ?? this.author,
-      thumbImage: thumbImage ?? this.thumbImage,
-      thumbImages: thumbImages ?? this.thumbImages,
+      thumb_image: thumb_image ?? this.thumb_image,
+      thumb_images: thumb_images ?? this.thumb_images,
     );
   }
 
@@ -112,7 +108,7 @@ class ArticleDetail {
     return {
       'id': id,
       'weigh': weigh,
-      'articletypeId': articletypeId,
+      'articletype_id': articletype_id,
       'title': title,
       'description': description,
       'articlecontent': articlecontent,
@@ -120,9 +116,8 @@ class ArticleDetail {
       'updatetime': updatetime,
       'status': status,
       'views': views,
-      'author': author,
-      'thumbImage': thumbImage,
-      'thumbImages': thumbImages,
+      'thumb_image': thumb_image,
+      'thumb_images': thumb_images,
     };
   }
 
@@ -130,7 +125,7 @@ class ArticleDetail {
     return ArticleDetail(
       id: map['id']?.toInt(),
       weigh: map['weigh']?.toInt(),
-      articletypeId: map['articletypeId']?.toInt(),
+      articletype_id: map['articletype_id']?.toInt(),
       title: map['title'],
       description: map['description'],
       articlecontent: map['articlecontent'],
@@ -138,9 +133,8 @@ class ArticleDetail {
       updatetime: map['updatetime']?.toInt(),
       status: map['status'],
       views: map['views']?.toInt(),
-      author: map['author'],
-      thumbImage: map['thumbImage'],
-      thumbImages: map['thumbImages'],
+      thumb_image: map['thumb_image'],
+      thumb_images: map['thumb_images'],
     );
   }
 
@@ -150,7 +144,7 @@ class ArticleDetail {
 
   @override
   String toString() {
-    return 'ArticleDetail(id: $id, weigh: $weigh, articletypeId: $articletypeId, title: $title, description: $description, articlecontent: $articlecontent, createtime: $createtime, updatetime: $updatetime, status: $status, views: $views,author: $author, thumbImage: $thumbImage, thumbImages: $thumbImages)';
+    return 'ArticleDetail(id: $id, weigh: $weigh, articletype_id: $articletype_id, title: $title, description: $description, articlecontent: $articlecontent, createtime: $createtime, updatetime: $updatetime, status: $status, views: $views, thumb_image: $thumb_image, thumb_images: $thumb_images)';
   }
 
   @override
@@ -160,7 +154,7 @@ class ArticleDetail {
     return other is ArticleDetail &&
         other.id == id &&
         other.weigh == weigh &&
-        other.articletypeId == articletypeId &&
+        other.articletype_id == articletype_id &&
         other.title == title &&
         other.description == description &&
         other.articlecontent == articlecontent &&
@@ -168,16 +162,15 @@ class ArticleDetail {
         other.updatetime == updatetime &&
         other.status == status &&
         other.views == views &&
-        other.author == author &&
-        other.thumbImage == thumbImage &&
-        other.thumbImages == thumbImages;
+        other.thumb_image == thumb_image &&
+        other.thumb_images == thumb_images;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
         weigh.hashCode ^
-        articletypeId.hashCode ^
+        articletype_id.hashCode ^
         title.hashCode ^
         description.hashCode ^
         articlecontent.hashCode ^
@@ -185,8 +178,7 @@ class ArticleDetail {
         updatetime.hashCode ^
         status.hashCode ^
         views.hashCode ^
-        author.hashCode ^
-        thumbImage.hashCode ^
-        thumbImages.hashCode;
+        thumb_image.hashCode ^
+        thumb_images.hashCode;
   }
 }

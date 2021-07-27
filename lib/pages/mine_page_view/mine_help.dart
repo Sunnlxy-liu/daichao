@@ -1,3 +1,7 @@
+import 'package:daichao/blocs/article/article_list_bloc.dart';
+import 'package:daichao/common/bloc/bloc_builder_wgt.dart';
+import 'package:daichao/model/article_list_model.dart';
+import 'package:daichao/pages/main_page_view/article_detail_page.dart';
 import 'package:daichao/pages/mine_page_view/mine_feedback_speed.dart';
 import 'package:daichao/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +16,11 @@ class MineHelpPage extends StatefulWidget {
 }
 
 class _MineHelpPageState extends State<MineHelpPage> {
+  ArticleListBloc articleListBloc;
   @override
   void initState() {
     super.initState();
+    articleListBloc = ArticleListBloc();
   }
 
   @override
@@ -41,8 +47,8 @@ class _MineHelpPageState extends State<MineHelpPage> {
             SizedBox(
               height: 18,
             ),
-            _articleListWgt(context, "热门问题"),
-            _articleListWgt(context, "常见问题"),
+            _articleListWgt(context, "热门问题", 'help_hot'),
+            _articleListWgt(context, "常见问题", 'help_normal'),
           ],
         ),
       ),
@@ -187,52 +193,61 @@ class _MineHelpPageState extends State<MineHelpPage> {
     );
   }
 
-  Widget _articleListWgt(context, String title) {
-    return Container(
-        color: Colors.white,
-        margin: EdgeInsets.only(bottom: 10),
-        padding: EdgeInsets.only(left: 18, right: 18, bottom: 12),
-        child: Column(
-          children: [
-            Container(
-              height: 55,
-              alignment: Alignment.centerLeft,
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: ColorsUtils.cl12,
-                  fontWeight: FontWeight.bold,
+  Widget _articleListWgt(context, String title, String page) {
+    return BlocConsumerWgt<ArticleListBloc>(
+      bloc: ArticleListBloc()..add(GetDataEvent(page)),
+      listenIf: [SuccessDataState],
+      builder: (context, state) {
+        if (state is SuccessDataState && page == state.page) {
+          return Container(
+            color: Colors.white,
+            margin: EdgeInsets.only(bottom: 10),
+            padding: EdgeInsets.only(left: 18, right: 18, bottom: 12),
+            child: Column(
+              children: [
+                Container(
+                  height: 55,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: ColorsUtils.cl12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-              ),
+                ListView.builder(
+                  padding: EdgeInsets.all(0),
+                  shrinkWrap: true, //范围内进行包裹（内容多高ListView就多高）
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: state.info.articleList.length,
+                  itemBuilder: (context, index) {
+                    return _articleItems(state.info.articleList[index]);
+                  },
+                ),
+              ],
             ),
-            ListView.builder(
-              padding: EdgeInsets.all(0),
-              shrinkWrap: true, //范围内进行包裹（内容多高ListView就多高）
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: 6,
-              itemBuilder: (context, index) {
-                return _articleItems();
-              },
-            ),
-          ],
-        ));
-    ;
+          );
+        }
+        return Container();
+      },
+    );
   }
 
-  Widget _articleItems() {
+  Widget _articleItems(ArticleList data) {
     return InkWell(
       onTap: () {
-        // NavigatorUtils.pushPage(
-        //   targPage: menu[2],
-        // );
+        NavigatorUtils.pushPage(
+          targPage: ArticleDetailPage(data.id),
+        );
       },
       child: Container(
         height: 32,
         alignment: Alignment.centerLeft,
         color: Colors.white,
         child: Text(
-          "如何更新个人信息?",
+          data.title,
           style: TextStyle(fontSize: 14, color: ColorsUtils.cl66),
         ),
       ),

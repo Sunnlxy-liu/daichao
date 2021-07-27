@@ -1,9 +1,10 @@
-import 'package:daichao/pages/mine_page_view/mine_sign.dart';
+import 'package:daichao/blocs/mine/suggest_bloc.dart';
+import 'package:daichao/common/bloc/base_state.dart';
+import 'package:daichao/common/bloc/bloc_builder_wgt.dart';
+import 'package:daichao/model/suggest_speed_model.dart';
 import 'package:daichao/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:daichao/pages/mine_page_view/recharge_record.dart';
 import 'package:daichao/utils/colors_utils.dart';
-import 'package:daichao/utils/navigator_utils.dart';
 import 'package:flutter_screenutil/screen_util.dart';
 
 class MineFeedbackSpeedPage extends StatefulWidget {
@@ -12,6 +13,7 @@ class MineFeedbackSpeedPage extends StatefulWidget {
 }
 
 class _MineFeedbackSpeedPageState extends State<MineFeedbackSpeedPage> {
+  SuggestBloc suggestBloc = SuggestBloc();
   @override
   void initState() {
     super.initState();
@@ -64,16 +66,27 @@ class _MineFeedbackSpeedPageState extends State<MineFeedbackSpeedPage> {
                             Radius.circular(10),
                           ),
                         ),
-                        child: Column(
-                          children: [
-                            _speedItem(),
-                            _speedItem(),
-                            _speedItem(),
-                            _speedItem(),
-                            _speedItem(),
-                            _speedItem(),
-                          ],
-                        ),
+                        child: BlocConsumerWgt<SuggestBloc>(
+                            bloc: SuggestBloc()..add(SuggestSpeedEvent()),
+                            listenIf: [SuccessSuggestSpeedState, NoDataState],
+                            builder: (context, state) {
+                              if (state is SuccessSuggestSpeedState) {
+                                return Column(
+                                  children: [
+                                    ListView.builder(
+                                      padding: EdgeInsets.all(0),
+                                      shrinkWrap: true, //范围内进行包裹（内容多高ListView就多高）
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: state.model.mySuggestSpeedInfo.length,
+                                      itemBuilder: (context, index) {
+                                        return _speedItem(state.model.mySuggestSpeedInfo[index]);
+                                      },
+                                    )
+                                  ],
+                                );
+                              }
+                              return Container();
+                            }),
                       ),
                     ),
                   ),
@@ -86,7 +99,7 @@ class _MineFeedbackSpeedPageState extends State<MineFeedbackSpeedPage> {
     );
   }
 
-  Widget _speedItem() {
+  Widget _speedItem(MySuggestSpeedInfo data) {
     return Container(
       height: 55,
       child: Row(
@@ -100,13 +113,15 @@ class _MineFeedbackSpeedPageState extends State<MineFeedbackSpeedPage> {
                 Container(
                   width: 15,
                   height: 15,
-                  decoration: BoxDecoration(color: Color(0xFFBEBEBE), shape: BoxShape.circle),
+                  decoration: BoxDecoration(
+                      color: data.status == 1 ? Theme.of(context).accentColor : Color(0xFFBEBEBE),
+                      shape: BoxShape.circle),
                 ),
                 SizedBox(height: 1),
                 Container(
                   width: 1,
                   height: 36,
-                  color: ColorUtils.lintSplitColor,
+                  color: data.status == 1 ? Theme.of(context).accentColor : ColorUtils.lintSplitColor,
                 ),
               ],
             ),
@@ -118,14 +133,14 @@ class _MineFeedbackSpeedPageState extends State<MineFeedbackSpeedPage> {
                 Container(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "2021-06-17 18:58:01",
+                    DateTime.fromMillisecondsSinceEpoch(data.createtime * 1000).toLocal().toString().substring(0, 16),
                     style: TextStyle(fontSize: 14, color: ColorUtils.cl99),
                   ),
                 ),
                 Container(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "提交成功",
+                    data.speedName,
                     style: TextStyle(fontSize: 14, color: ColorUtils.cl99),
                   ),
                 ),

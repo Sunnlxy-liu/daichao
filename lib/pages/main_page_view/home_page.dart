@@ -1,18 +1,27 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daichao/blocs/home/home_index_bloc.dart';
+import 'package:daichao/data/repository/user_repository.dart';
 import 'package:daichao/model/article_list_model.dart';
+import 'package:daichao/model/banner_adver_model.dart';
 import 'package:daichao/model/loan_list_model.dart';
 import 'package:daichao/model/loan_type_model.dart';
 import 'package:daichao/model/luck_users_model.dart';
+import 'package:daichao/pages/loan_page_view/loan_page.dart';
 import 'package:daichao/pages/loan_page_view/widgets/loan_item_wgt.dart';
-import 'package:daichao/pages/welcome_page.dart';
+import 'package:daichao/pages/loot_page_view/loot_page.dart';
+import 'package:daichao/pages/main_page_view/article_page.dart';
+import 'package:daichao/pages/mine_page_view/mine_information.dart';
+import 'package:daichao/pages/mine_page_view/mine_realname.dart';
+import 'package:daichao/utils/colors_utils.dart';
 import 'package:daichao/utils/navigator_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:daichao/common/bloc/bloc_builder_wgt.dart';
 import 'package:daichao/pages/main_page_view/widget/article_item_wgt.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 
 class HomePage extends StatelessWidget {
-  HomeIndexBloc _homeIndexBloc = HomeIndexBloc();
+  BannerAdverModel adverBannerModel;
+  final HomeIndexBloc _homeIndexBloc = HomeIndexBloc();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +36,7 @@ class HomePage extends StatelessWidget {
                   children: <Widget>[
                     _topBar(context),
                     _myCreditWgt(context),
-                    // _bannerWgt(context),
+                    _homeBannerWgt(context, state.homeBeen.adverList),
                     _fastMenuWgt(context, state.homeBeen.loanTypeList),
                     _resultWgt(context, state.homeBeen.userList),
                     _hotLoanListWgt(context, state.homeBeen.loanList),
@@ -154,7 +163,9 @@ class HomePage extends StatelessWidget {
                         ),
                         child: ClipOval(
                           child: CachedNetworkImage(
-                            imageUrl: "http://liuxuyang.cc/assets/img/headicon.png",
+                            imageUrl: !UserRespository().userModel.isLogin
+                                ? "http://liuxuyang.cc/assets/img/headicon.png"
+                                : UserRespository().userModel.userInfo.avatar,
                             placeholder: (context, url) => Image.asset(
                               "assets/images/headicon.png",
                               fit: BoxFit.cover,
@@ -176,10 +187,12 @@ class HomePage extends StatelessWidget {
                                 Container(
                                   height: 28,
                                   child: Text(
-                                    "刘徐阳",
+                                    UserRespository().userModel.isLogin
+                                        ? UserRespository().userModel.userInfo.nickname
+                                        : '您还未登录',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: Colors.black,
+                                      color: UserRespository().userModel.isLogin ? Colors.black : ColorsUtils.cl66,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -187,36 +200,39 @@ class HomePage extends StatelessWidget {
                                 SizedBox(
                                   width: 5,
                                 ),
-                                Container(
-                                  width: 52,
-                                  height: 18,
-                                  padding: EdgeInsets.only(left: 3, right: 3),
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(Radius.circular(4)),
-                                    border: Border.all(
-                                      width: 0.5,
-                                      color: Theme.of(context).accentColor,
+                                Visibility(
+                                  visible: UserRespository().userModel.isLogin,
+                                  child: Container(
+                                    width: 52,
+                                    height: 18,
+                                    padding: EdgeInsets.only(left: 3, right: 3),
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                                      border: Border.all(
+                                        width: 0.5,
+                                        color: Theme.of(context).accentColor,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          IconData(0xe656, fontFamily: "Appicon"),
+                                          color: Theme.of(context).accentColor,
+                                          size: 10,
+                                        ),
+                                        SizedBox(
+                                          width: 3,
+                                        ),
+                                        Text(
+                                          "已实名",
+                                          style: TextStyle(
+                                              color: Theme.of(context).accentColor, fontSize: 10, height: 1.2),
+                                        )
+                                      ],
                                     ),
                                   ),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        IconData(0xe656, fontFamily: "Appicon"),
-                                        color: Theme.of(context).accentColor,
-                                        size: 10,
-                                      ),
-                                      SizedBox(
-                                        width: 3,
-                                      ),
-                                      Text(
-                                        "已实名",
-                                        style:
-                                            TextStyle(color: Theme.of(context).accentColor, fontSize: 10, height: 1.2),
-                                      )
-                                    ],
-                                  ),
-                                )
+                                ),
                               ],
                             ),
                             Row(
@@ -250,6 +266,11 @@ class HomePage extends StatelessWidget {
                         child: Column(
                           children: [
                             InkWell(
+                              onTap: () {
+                                NavigatorUtils.pushPage(
+                                  targPage: MineRealNamePage(),
+                                );
+                              },
                               child: Container(
                                 height: 31,
                                 child: Row(
@@ -274,6 +295,11 @@ class HomePage extends StatelessWidget {
                               ),
                             ),
                             InkWell(
+                              onTap: () {
+                                NavigatorUtils.pushPage(
+                                  targPage: MineInformationPage(),
+                                );
+                              },
                               child: Container(
                                 height: 31,
                                 child: Row(
@@ -313,8 +339,19 @@ class HomePage extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: Color(0xFFE2E2E2),
                             borderRadius: BorderRadius.all(
-                              Radius.circular(2.5),
+                              Radius.circular(5),
                             ),
+                          ),
+                          child: LinearProgressIndicator(
+                            //0~1的浮点数，用来表示进度多少;如果 value 为 null 或空，则显示一个动画，否则显示一个定值
+                            value: UserRespository().userModel.isLogin &&
+                                    UserRespository().userModel.userInfo.infoPercent != null
+                                ? UserRespository().userModel.userInfo.infoPercent
+                                : 0,
+                            //背景颜色
+                            backgroundColor: Color(0xFFE2E2E2),
+                            //进度颜色
+                            valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).accentColor),
                           ),
                         ),
                       ),
@@ -329,7 +366,7 @@ class HomePage extends StatelessWidget {
                       InkWell(
                         onTap: () {
                           NavigatorUtils.pushPage(
-                            targPage: WelcomePage(),
+                            targPage: MineInformationPage(),
                           );
                         },
                         child: Container(
@@ -369,6 +406,52 @@ class HomePage extends StatelessWidget {
             ),
           )
         ],
+      ),
+    );
+  }
+
+  Widget _homeBannerWgt(context, List<AdverList> list) {
+    return Offstage(
+      offstage: list.length == 0,
+      child: Container(
+        margin: EdgeInsets.fromLTRB(12, 12, 12, 0),
+        width: double.infinity,
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(3)),
+          child: AspectRatio(
+            aspectRatio: 672 / 216, // 宽高比
+            child: Swiper(
+              onTap: (int index) {},
+              itemBuilder: (BuildContext context, int index) {
+                // InkWell组件为每一项设置点击事件监听
+                return CachedNetworkImage(
+                  imageUrl: list[index].coverImage,
+                  placeholder: (context, url) => Image.asset(
+                    "assets/images/default_image.png",
+                    fit: BoxFit.cover,
+                  ),
+                  errorWidget: (context, url, error) => Image.asset(
+                    "assets/images/default_image.png",
+                    fit: BoxFit.cover,
+                  ),
+                  fit: BoxFit.cover,
+                );
+              },
+              itemCount: list.length,
+              autoplay: true,
+              loop: true,
+              pagination: new SwiperPagination(
+                builder: DotSwiperPaginationBuilder(
+                  // 指示器的大小和颜色
+                  size: 5,
+                  activeSize: 5,
+                  color: Colors.black54,
+                  activeColor: Colors.white,
+                ),
+              ), // 显示指示器，去掉就不显示
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -422,7 +505,9 @@ class HomePage extends StatelessWidget {
                       height: 32,
                       alignment: Alignment.center,
                       child: Text(
-                        "10.0",
+                        UserRespository().userModel.isLogin
+                            ? UserRespository().userModel.userInfo.creditScore.toString()
+                            : "--",
                         style: TextStyle(
                           color: Color(0xFFFF6600),
                           fontSize: 24,
@@ -488,7 +573,9 @@ class HomePage extends StatelessWidget {
                       height: 32,
                       alignment: Alignment.center,
                       child: Text(
-                        "1000",
+                        UserRespository().userModel.isLogin
+                            ? UserRespository().userModel.userInfo.score.toString()
+                            : "--",
                         style: TextStyle(
                           color: Color(0xFFFF6600),
                           fontSize: 24,
@@ -601,7 +688,7 @@ class HomePage extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _titleOfModularWgt(context, "幸运用户", "去夺宝"),
+          _titleOfModularWgt(context, "幸运用户", "去夺宝", LootPage()),
           Column(
             children: list.map((e) {
               return _luckUserItem(e);
@@ -698,13 +785,20 @@ class HomePage extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _titleOfModularWgt(context, "热门贷款", "更多"),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: list.map((e) {
-              return LoanItemWgt(e);
-            }).toList(),
-          )
+          _titleOfModularWgt(context, "热门贷款", "更多", LoanPage()),
+          Container(
+            child: Column(children: [
+              ListView.builder(
+                padding: EdgeInsets.all(0),
+                shrinkWrap: true, //范围内进行包裹（内容多高ListView就多高）
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: list.length,
+                itemBuilder: (context, index) {
+                  return LoanItemWgt(list[index], isLast: index + 1 == list.length);
+                },
+              ),
+            ]),
+          ),
         ],
       ),
     );
@@ -721,7 +815,7 @@ class HomePage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          _titleOfModularWgt(context, "热门资讯", "更多"),
+          _titleOfModularWgt(context, "热门资讯", "更多", ArticlePage()),
           Column(
             children: list.map((e) {
               return ArticleItemWgt(e);
@@ -732,7 +826,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _titleOfModularWgt(context, String title, String rightTitle) {
+  Widget _titleOfModularWgt(context, String title, String rightTitle, page) {
     return Container(
       height: 40,
       color: Colors.white,
@@ -752,6 +846,11 @@ class HomePage extends StatelessWidget {
             ),
           ),
           InkWell(
+            onTap: () {
+              NavigatorUtils.pushPage(
+                targPage: page,
+              );
+            },
             child: Text(
               rightTitle,
               style: TextStyle(

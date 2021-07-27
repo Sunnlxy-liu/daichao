@@ -1,3 +1,4 @@
+import 'package:daichao/data/repository/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:daichao/pages/mine_page_view/mine_payment.dart';
 import 'package:daichao/pages/mine_page_view/recharge_record.dart';
@@ -114,7 +115,7 @@ class _MineIntegralPageState extends State<MineIntegralPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "1999",
+                          UserRespository().userModel.userInfo.score.toString(),
                           style: TextStyle(
                             fontSize: 35,
                             color: Color(0xFFff8900),

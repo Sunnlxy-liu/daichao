@@ -2,11 +2,12 @@ import 'dart:io';
 import 'package:daichao/utils/colors_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:image_crop/image_crop.dart';
+import 'package:image_picker/image_picker.dart';
 
 // ignore: must_be_immutable
 class CropImagePage extends StatefulWidget {
   CropImagePage(this.image);
-  File image;
+  XFile image;
 
   @override
   State<CropImagePage> createState() => _CropImagePageState();
@@ -16,7 +17,7 @@ class _CropImagePageState extends State<CropImagePage> {
   double baseLeft; //图片左上角的x坐标
   double baseTop; //图片左上角的y坐标
   double imageWidth; //图片宽度，缩放后会变化
-  double imageScale = 1; //图片缩放比例
+  double imageScale = 1.58; //图片缩放比例
   Image imageView;
   final cropKey = GlobalKey<CropState>();
 
@@ -30,7 +31,7 @@ class _CropImagePageState extends State<CropImagePage> {
         child: Stack(children: <Widget>[
           Container(
             child: Crop.file(
-              widget.image,
+              File(widget.image.path),
               key: cropKey,
               aspectRatio: 1.0,
               alwaysShowGrid: true,
@@ -62,7 +63,9 @@ class _CropImagePageState extends State<CropImagePage> {
                 ),
                 FlatButton(
                   onPressed: () {
-                    _crop(widget.image);
+                    _crop(
+                      File(widget.image.path),
+                    );
                   },
                   child: Text(
                     '完成',

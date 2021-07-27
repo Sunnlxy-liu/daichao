@@ -51,6 +51,7 @@ class ArticleList {
   final int id;
   final String title;
   final String description;
+  final String articlecontent;
   final String thumbImage;
   final int createtime;
   final String status;
@@ -60,6 +61,7 @@ class ArticleList {
     this.id,
     this.title,
     this.description,
+    this.articlecontent,
     this.thumbImage,
     this.createtime,
     this.status,
@@ -82,6 +84,7 @@ class ArticleList {
       id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
+      articlecontent: articlecontent ?? this.articlecontent,
       thumbImage: thumbImage ?? this.thumbImage,
       createtime: createtime ?? this.createtime,
       status: status ?? this.status,
@@ -95,6 +98,7 @@ class ArticleList {
       'id': id,
       'title': title,
       'description': description,
+      'articlecontent': articlecontent,
       'thumbImage': thumbImage,
       'createtime': createtime,
       'status': status,
@@ -108,6 +112,7 @@ class ArticleList {
       id: map['id']?.toInt(),
       title: map['title'],
       description: map['description'],
+      articlecontent: map['articlecontent'],
       thumbImage: map['thumbImage'],
       createtime: map['createtime']?.toInt(),
       status: map['status'],
@@ -122,7 +127,7 @@ class ArticleList {
 
   @override
   String toString() {
-    return 'ArticleList(id: $id, title: $title, description: $description, thumbImage: $thumbImage, createtime: $createtime, status: $status, views: $views, name: $name)';
+    return 'ArticleList(id: $id, title: $title, description: $description, articlecontent: $articlecontent, thumbImage: $thumbImage, createtime: $createtime, status: $status, views: $views, name: $name)';
   }
 
   @override
@@ -133,6 +138,7 @@ class ArticleList {
         other.id == id &&
         other.title == title &&
         other.description == description &&
+        other.articlecontent == articlecontent &&
         other.thumbImage == thumbImage &&
         other.createtime == createtime &&
         other.status == status &&
@@ -145,6 +151,7 @@ class ArticleList {
     return id.hashCode ^
         title.hashCode ^
         description.hashCode ^
+        articlecontent.hashCode ^
         thumbImage.hashCode ^
         createtime.hashCode ^
         status.hashCode ^

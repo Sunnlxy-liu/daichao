@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daichao/model/article_list_model.dart';
+import 'package:daichao/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:daichao/pages/main_page_view/article_detail_page.dart';
 import 'package:daichao/utils/dateformat_utils.dart';
@@ -33,7 +34,7 @@ class _NewsItemWgtState extends State<ArticleItemWgt> {
                   border: Border(
                     bottom: BorderSide(
                       width: 0.5,
-                      color: Color(0xFFDFDFDF),
+                      color: ColorUtils.clee,
                     ),
                   ),
                 ),

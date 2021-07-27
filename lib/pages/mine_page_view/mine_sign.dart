@@ -1,3 +1,6 @@
+import 'package:daichao/blocs/mine/user_sign_bloc.dart';
+import 'package:daichao/common/bloc/base_state.dart';
+import 'package:daichao/common/bloc/bloc_builder_wgt.dart';
 import 'package:flutter/material.dart';
 import 'package:daichao/pages/mine_page_view/mine_payment.dart';
 import 'package:daichao/utils/colors_utils.dart';
@@ -11,9 +14,12 @@ class MineSignPage extends StatefulWidget {
 }
 
 class _MineSignPageState extends State<MineSignPage> {
+  SignBloc singBloc;
+
   @override
   void initState() {
     super.initState();
+    singBloc = SignBloc();
   }
 
   @override
@@ -46,27 +52,35 @@ class _MineSignPageState extends State<MineSignPage> {
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _topBar(context),
-            SizedBox(
-              height: 14,
-            ),
-            _signListWgt(context, "每日任务", taskLists),
-            _signListWgt(context, "系统认证", systemLists),
-          ],
-        ),
+        child: BlocConsumerWgt<SignBloc>(
+            bloc: singBloc..add(GetSignInfoEvent()),
+            listenIf: [SuccessSignState, ShowToastState, NoDataState],
+            builder: (context, state) {
+              if (state is SuccessSignState) {
+                return Column(
+                  children: [
+                    _topBar(context, state),
+                    SizedBox(
+                      height: 24,
+                    ),
+                    _signListWgt(context, "每日任务", taskLists),
+                    _signListWgt(context, "系统认证", systemLists),
+                  ],
+                );
+              }
+              return Container();
+            }),
       ),
     );
   }
 
-  Widget _topBar(context) {
+  Widget _topBar(context, SuccessSignState state) {
     return Container(
-      height: 160 + MediaQuery.of(context).padding.top + 15,
+      height: 170 + MediaQuery.of(context).padding.top + 15,
       child: Stack(
         children: [
           Container(
-            height: 140,
+            height: 150,
             decoration: BoxDecoration(
               color: Theme.of(context).accentColor,
               borderRadius: BorderRadius.only(
@@ -91,7 +105,7 @@ class _MineSignPageState extends State<MineSignPage> {
                     baseline: 20,
                     baselineType: TextBaseline.alphabetic,
                     child: Text(
-                      "3",
+                      state.model.signInfo.continueSign.toString(),
                       style: TextStyle(fontSize: 20, color: Color(0xFFfed74f)),
                     ),
                   ),
@@ -107,7 +121,7 @@ class _MineSignPageState extends State<MineSignPage> {
                     baseline: 20,
                     baselineType: TextBaseline.alphabetic,
                     child: Text(
-                      "明天签到+10积分",
+                      "明天签到+" + state.model.signInfo.tomorrowScore.toString() + "积分",
                       style: TextStyle(fontSize: 14, color: Colors.white),
                     ),
                   ),
@@ -142,16 +156,29 @@ class _MineSignPageState extends State<MineSignPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Row(
-                      children: [
-                        _signCoinWgt(true, '1'),
-                        _signCoinWgt(true, '2'),
-                        _signCoinWgt(true, '3'),
-                        _signCoinWgt(true, '4'),
-                        _signCoinWgt(false, '5'),
-                        _signCoinWgt(false, '6'),
-                        _signCoinWgt(false, '7'),
-                      ],
+                    Container(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          _signCoinWgt(state.model.signInfo.sevenDays[0] == "1" ? true : false, "1"),
+                          _signCoinWgt(state.model.signInfo.sevenDays[1] == "1" ? true : false, "2"),
+                          _signCoinWgt(state.model.signInfo.sevenDays[2] == "1" ? true : false, "3"),
+                          _signCoinWgt(state.model.signInfo.sevenDays[3] == "1" ? true : false, "4"),
+                          _signCoinWgt(state.model.signInfo.sevenDays[4] == "1" ? true : false, "5"),
+                          _signCoinWgt(state.model.signInfo.sevenDays[5] == "1" ? true : false, "6"),
+                          _signCoinWgt(state.model.signInfo.sevenDays[6] == "1" ? true : false, "7"),
+
+                          // ListView.builder(
+                          //   padding: EdgeInsets.all(0),
+                          //   shrinkWrap: true,
+                          //   physics: NeverScrollableScrollPhysics(),
+                          //   itemCount: state.model.signInfo.sevenDays.length,
+                          //   itemBuilder: (context, index) {
+                          //     return ;
+                          //   },
+                          // ),
+                        ],
+                      ),
                     ),
                     SizedBox(
                       height: 20,
@@ -164,7 +191,7 @@ class _MineSignPageState extends State<MineSignPage> {
                           baseline: 35,
                           baselineType: TextBaseline.alphabetic,
                           child: Text(
-                            "1999",
+                            state.model.signInfo.newScore.toString(),
                             style: TextStyle(
                               fontSize: 35,
                               color: Color(0xFFff8900),
@@ -181,23 +208,54 @@ class _MineSignPageState extends State<MineSignPage> {
                           ),
                         ),
                         Spacer(),
-                        RaisedButton(
-                          // key: ,
-                          color: Color(0xFFff8900),
-                          highlightColor: Color(0xFFff8900),
-                          colorBrightness: Brightness.dark,
-                          splashColor: Color(0xFFff8900),
+                        TextButton(
+                          onPressed: () {
+                            if (!state.model.signInfo.todayIsSigned) {
+                              singBloc..add(DoSignEvent());
+                            }
+                          },
                           child: Text(
-                            "签到",
+                            state.model.signInfo.todayIsSigned ? '已签到' : "签到",
                             style: TextStyle(fontSize: 14),
                           ),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-                          onPressed: () {
-                            NavigatorUtils.pushPage(
-                              targPage: MinePaymentPage(),
-                            );
-                          },
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                state.model.signInfo.todayIsSigned ? Colors.grey : Color(0xFFff8900)),
+                            foregroundColor: MaterialStateProperty.all(Colors.white),
+                            textStyle: MaterialStateProperty.all(TextStyle(fontSize: 30)),
+                            // shape: MaterialStateProperty.all(OutlinedBorder(side: BorderSide(color: Colors.red))),
+                            shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                side: BorderSide(color: Colors.red, width: 10),
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                            ),
+                            side: MaterialStateProperty.all(
+                              BorderSide(
+                                color: state.model.signInfo.todayIsSigned ? Colors.grey : Color(0xFFff8900),
+                                width: 0.5,
+                              ),
+                            ),
+                          ),
                         ),
+                        // RaisedButton(
+
+                        //   // key: ,
+                        //   color: Color(0xFFff8900),
+                        //   highlightColor: Color(0xFFff8900),
+                        //   colorBrightness: Brightness.dark,
+                        //   splashColor: Color(0xFFff8900),
+                        //   child: Text(
+                        //     state.model.signInfo.todayIsSigned ?'已签到' :"签到",
+                        //     style: TextStyle(fontSize: 14),
+                        //   ),
+                        //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                        //   onPressed: () {
+                        //     NavigatorUtils.pushPage(
+                        //       targPage: MinePaymentPage(),
+                        //     );
+                        //   },
+                        // ),
                         SizedBox(width: 12),
                       ],
                     ),
@@ -212,37 +270,39 @@ class _MineSignPageState extends State<MineSignPage> {
   }
 
   Widget _signCoinWgt(bool isSgined, String dayNumber) {
-    return Column(
-      children: [
-        Container(
-          width: 44,
-          height: 42.5,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              alignment: Alignment.center,
-              image: AssetImage(
-                //signed_seven
-                dayNumber == '7'
-                    ? Utils.getImage('signed_seven.jpg')
-                    : isSgined
-                        ? Utils.getImage('signed_coin.jpg')
-                        : Utils.getImage('un_sign_coin.jpg'),
+    return Expanded(
+      child: Column(
+        children: [
+          Container(
+            width: 44,
+            height: 42.5,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                alignment: Alignment.center,
+                image: AssetImage(
+                  //signed_seven
+                  dayNumber == '7'
+                      ? Utils.getImage('signed_seven.jpg')
+                      : isSgined
+                          ? Utils.getImage('signed_coin.jpg')
+                          : Utils.getImage('un_sign_coin.jpg'),
+                ),
               ),
             ),
           ),
-        ),
-        SizedBox(height: 5),
-        Container(
-          alignment: Alignment.center,
-          child: Text(
-            "第$dayNumber天",
-            style: TextStyle(
-              fontSize: 11,
-              color: isSgined ? Color(0xFFff8900) : ColorsUtils.cl66,
+          SizedBox(height: 5),
+          Container(
+            alignment: Alignment.center,
+            child: Text(
+              "第$dayNumber天",
+              style: TextStyle(
+                fontSize: 11,
+                color: isSgined ? Color(0xFFff8900) : ColorsUtils.cl66,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

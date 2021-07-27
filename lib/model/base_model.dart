@@ -1,5 +1,7 @@
-abstract class BaseModel {
-  BaseModel fromMap(Map<String, dynamic> map);
+class BaseModel {
+  BaseModel fromMap(Map<String, dynamic> map) {
+    return null;
+  }
 }
 
 // 数据包装类

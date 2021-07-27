@@ -1,15 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daichao/data/repository/user_repository.dart';
-import 'package:daichao/pages/mine_page_view/login.dart';
 import 'package:daichao/pages/mine_page_view/widgets/img_sheet_page.dart';
 import 'package:daichao/utils/image_utils.dart';
-import 'package:daichao/utils/navigator_utils.dart';
 import 'package:daichao/utils/toast_utils.dart';
-import 'package:daichao/utils/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:daichao/utils/colors_utils.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pickers/more_pickers/init_data.dart';
+import 'package:flutter_pickers/pickers.dart';
+import 'package:flutter_pickers/style/default_style.dart';
+import 'package:flutter_pickers/time_picker/model/date_mode.dart';
+import 'package:flutter_pickers/time_picker/model/pduration.dart';
+import 'package:flutter_pickers/time_picker/model/suffix.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -22,7 +24,14 @@ class MineInformationPage extends StatefulWidget {
 
 class _MineInformationPageState extends State<MineInformationPage> {
   ToastFuture _closeFunc;
-
+  List DataSex = ['男', '女'];
+  String selectSex = '女';
+  String selectEdu;
+  String selectConstellation;
+  var selectData = {
+    DateMode.YMD: '',
+    DateMode.YM: '',
+  };
   Map<int, List> userInfo = {
     0: ['昵称', '摩羯座'],
     1: ['性别', '男'],
@@ -63,6 +72,78 @@ class _MineInformationPageState extends State<MineInformationPage> {
         child: Column(
           children: [
             _informationImage(context),
+            InkWell(
+              onTap: () {},
+              child: Container(
+                margin: EdgeInsets.only(left: 15, right: 15),
+                height: 55,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      width: 0.5,
+                      color: Color(0xFFE6E6E6),
+                    ),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      '昵称',
+                      style: TextStyle(fontSize: 15, color: Color(0xFF0d162b)),
+                    ),
+                    Spacer(),
+                    Text(
+                      'liuxuyang',
+                      style: TextStyle(fontSize: 15, color: Color(0xFF878792)),
+                    ),
+                    SizedBox(width: 3),
+                    Icon(
+                      IconData(0xe638, fontFamily: "Appicon"),
+                      color: Color(0xFF878792),
+                      size: 15,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                _onClickItem(DataSex, selectSex);
+              },
+              child: Container(
+                margin: EdgeInsets.only(left: 15, right: 15),
+                height: 55,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      width: 0.5,
+                      color: Color(0xFFE6E6E6),
+                    ),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      '性别',
+                      style: TextStyle(fontSize: 15, color: Color(0xFF0d162b)),
+                    ),
+                    Spacer(),
+                    Text(
+                      selectSex,
+                      style: TextStyle(fontSize: 15, color: Color(0xFF878792)),
+                    ),
+                    SizedBox(width: 3),
+                    Icon(
+                      IconData(0xe638, fontFamily: "Appicon"),
+                      color: Color(0xFF878792),
+                      size: 15,
+                    ),
+                  ],
+                ),
+              ),
+            ),
             Container(
               color: Colors.white,
               child: ListView.builder(
@@ -160,36 +241,39 @@ class _MineInformationPageState extends State<MineInformationPage> {
   }
 
   Widget _informationItem(List info) {
-    return Container(
-      margin: EdgeInsets.only(left: 15, right: 15),
-      height: 55,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            width: 0.5,
-            color: Color(0xFFE6E6E6),
+    return InkWell(
+      onTap: () {},
+      child: Container(
+        margin: EdgeInsets.only(left: 15, right: 15),
+        height: 55,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              width: 0.5,
+              color: Color(0xFFE6E6E6),
+            ),
           ),
         ),
-      ),
-      child: Row(
-        children: [
-          Text(
-            info[0],
-            style: TextStyle(fontSize: 15, color: Color(0xFF0d162b)),
-          ),
-          Spacer(),
-          Text(
-            info[1],
-            style: TextStyle(fontSize: 15, color: Color(0xFF878792)),
-          ),
-          SizedBox(width: 3),
-          Icon(
-            IconData(0xe638, fontFamily: "Appicon"),
-            color: Color(0xFF878792),
-            size: 15,
-          ),
-        ],
+        child: Row(
+          children: [
+            Text(
+              info[0],
+              style: TextStyle(fontSize: 15, color: Color(0xFF0d162b)),
+            ),
+            Spacer(),
+            Text(
+              info[1],
+              style: TextStyle(fontSize: 15, color: Color(0xFF878792)),
+            ),
+            SizedBox(width: 3),
+            Icon(
+              IconData(0xe638, fontFamily: "Appicon"),
+              color: Color(0xFF878792),
+              size: 15,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -229,12 +313,11 @@ class _MineInformationPageState extends State<MineInformationPage> {
 
   Widget _logoutBtnWgt(context) {
     return Offstage(
-      offstage: !UserRespository().isLogin,
+      offstage: !UserRespository().userModel.isLogin,
       child: InkWell(
         onTap: () async {
           UserRespository().logout();
           ToastUtils.showToastMsg("已退出登录");
-          NavigatorUtils.pushPage(targPage: LoginPage());
           // var bRet = await Utils.showDialog(context, dialog: LogoutDialog());
           // if (bRet != true) {
           //   return;
@@ -299,5 +382,59 @@ class _MineInformationPageState extends State<MineInformationPage> {
         ToastUtils.closeAllToast();
       }
     });
+  }
+
+  void _onClickItem(var data, var selectData, {String label}) {
+    Pickers.showSinglePicker(
+      context,
+      data: data,
+      selectData: selectData,
+      pickerStyle: DefaultPickerStyle(),
+      // suffix: label,
+      onConfirm: (p, position) {
+        print('longer >>> 返回数据下标：$position');
+        print('longer >>> 返回数据：$p');
+        print('longer >>> 返回数据类型：${p.runtimeType}');
+        setState(() {
+          if (data == PickerDataType.sex) {
+            selectSex = p;
+          } else if (data == PickerDataType.education) {
+            selectEdu = p;
+          } else if (data == PickerDataType.constellation) {
+            selectConstellation = p;
+          }
+        });
+      },
+    );
+  }
+
+  void _onDateClickItem(model) {
+    Pickers.showDatePicker(
+      context,
+      mode: model,
+      suffix: Suffix.normal(),
+
+      // selectDate: PDuration(month: 2),
+      minDate: PDuration(year: 2020, month: 2, day: 10),
+      maxDate: PDuration(second: 22),
+
+      // selectDate: PDuration(hour: 18, minute: 36, second: 36),
+      // minDate: PDuration(hour: 12, minute: 38, second: 3),
+      // maxDate: PDuration(hour: 12, minute: 40, second: 36),
+      onConfirm: (p) {
+        print('longer >>> 返回数据：$p');
+        setState(() {
+          switch (model) {
+            case DateMode.YMD:
+              selectData[model] = '${p.year}-${p.month}-${p.day}';
+              break;
+            case DateMode.YM:
+              selectData[model] = '${p.year}-${p.month}';
+              break;
+          }
+        });
+      },
+      // onChanged: (p) => print(p),
+    );
   }
 }

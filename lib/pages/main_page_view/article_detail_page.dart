@@ -5,7 +5,6 @@ import 'package:daichao/blocs/article/article_detail_bloc.dart';
 import 'package:daichao/common/bloc/bloc_builder_wgt.dart';
 import 'package:daichao/widgets/appbar_wgt.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class ArticleDetailPage extends StatelessWidget {
   final int articleId;
@@ -73,7 +72,7 @@ class ArticleDetailPage extends StatelessWidget {
               width: 30,
               height: 30,
               child: CachedNetworkImage(
-                imageUrl: state.info.thumbImage,
+                imageUrl: state.info.thumb_image,
                 placeholder: (context, url) => Image.asset(
                   "assets/images/ex1.jpg",
                   fit: BoxFit.cover,
@@ -93,7 +92,7 @@ class ArticleDetailPage extends StatelessWidget {
             height: 30,
             alignment: Alignment.centerLeft,
             child: Text(
-              state.info.author,
+              "哈尼老师",
               style: TextStyle(color: Color(0xFF8f96a3), fontSize: 12),
             ),
           ),

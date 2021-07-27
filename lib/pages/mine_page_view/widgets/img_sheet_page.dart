@@ -1,40 +1,49 @@
+import 'package:daichao/utils/navigator_utils.dart';
+import 'package:daichao/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:daichao/utils/colors_utils.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:daichao/pages/mine_page_view/widgets/img_crop_page.dart';
 
 class ImageSheetPage extends StatelessWidget {
   TextStyle get _textStyle => TextStyle(fontSize: 13, color: Color(0xFF202020));
   final ImagePicker _picker = ImagePicker();
-
   void _onSelectPicture(context) async {
-    PickedFile img = await _picker.getImage(
-      source: ImageSource.gallery,
-    );
-    if (img == null) {
+    XFile image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image == null) {
       Navigator.of(context).pop();
     } else {
-      Navigator.of(context).pop();
-      // NavigatorUtils.pushPage(context, CropImagePage(img)).then((value) {
-      //   Navigator.of(context).pop(value);
-      // });
+      NavigatorUtils.pushPage(
+        targPage: CropImagePage(image),
+        dismissCallBack: (value) {
+          if (value != null) {
+            Navigator.of(context).pop(value);
+          }
+        },
+      );
     }
   }
 
   void _onCamera(context) {
     _picker
-        .getImage(
+        .pickImage(
       source: ImageSource.camera,
     )
-        .then((value) {
-      if (value == null) {
-        Navigator.of(context).pop();
-      } else {
-        Navigator.of(context).pop();
-        // NavigatorUtils.pushPage(context, CropImagePage(value)).then((value) {
-        //   Navigator.of(context).pop(value);
-        // });
-      }
-    });
+        .then(
+      (value) {
+        if (value == null) {
+          Navigator.of(context).pop();
+        } else {
+          NavigatorUtils.pushPage(
+            targPage: CropImagePage(value),
+            dismissCallBack: (value) {
+              if (value != null) {
+                Navigator.of(context).pop(value);
+              }
+            },
+          );
+        }
+      },
+    );
   }
 
   @override
@@ -58,7 +67,7 @@ class ImageSheetPage extends StatelessWidget {
         ),
         Container(
           height: 1,
-          color: ColorsUtils.lintSplitColor,
+          color: ColorUtils.lintSplitColor,
         ),
         InkWell(
           child: Container(
@@ -76,7 +85,7 @@ class ImageSheetPage extends StatelessWidget {
         ),
         Container(
           height: 5,
-          color: ColorsUtils.lintSplitColor,
+          color: ColorUtils.lintSplitColor,
         ),
         InkWell(
           child: Container(

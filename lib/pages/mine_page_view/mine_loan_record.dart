@@ -52,18 +52,23 @@ class _MineLoanRecordPageState extends State<MineLoanRecordPage> {
             );
           }
           if (state is SuccessLoanRecordState) {
-            return Column(
-              children: [
-                ListView.builder(
-                  padding: EdgeInsets.all(0),
-                  shrinkWrap: true, //范围内进行包裹（内容多高ListView就多高）
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: state.model.myloanList.length,
-                  itemBuilder: (context, index) {
-                    return _loanRecordItem(state.model.myloanList[index]);
-                  },
-                ),
-              ],
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  ListView.builder(
+                    padding: EdgeInsets.all(0),
+                    shrinkWrap: true, //范围内进行包裹（内容多高ListView就多高）
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: state.model.myloanList.length,
+                    itemBuilder: (context, index) {
+                      return _loanRecordItem(state.model.myloanList[index]);
+                    },
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                ],
+              ),
             );
           }
           return Container();
@@ -84,7 +89,7 @@ class _MineLoanRecordPageState extends State<MineLoanRecordPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "贷款" + item.loan_amount.toString() + "元",
+                  "贷款" + item.loanAmount.toString() + "元",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -92,7 +97,7 @@ class _MineLoanRecordPageState extends State<MineLoanRecordPage> {
                   ),
                 ),
                 Text(
-                  item.approval_status, //  已还清3870ff  待还款29d355 已逾期ff3333
+                  item.approvalStatus, //  已还清3870ff  待还款29d355 已逾期ff3333
                   style: TextStyle(
                     fontSize: 14,
                     color: Color(0xFF3870ff),
@@ -106,7 +111,7 @@ class _MineLoanRecordPageState extends State<MineLoanRecordPage> {
             Row(
               children: [
                 Text(
-                  item.approval_status == '已审核'
+                  item.approvalStatus == '已审核'
                       ? Utils.stampTimeFormatYmd(item.createtime)
                       : Utils.stampTimeFormatYmd(item.createtime),
                   style: TextStyle(
@@ -148,7 +153,7 @@ class _MineLoanRecordPageState extends State<MineLoanRecordPage> {
                 ),
                 SizedBox(width: 6),
                 Text(
-                  Utils.stampTimeFormatYmd(item.repay_time),
+                  Utils.stampTimeFormatYmd(item.repayTime),
                   style: TextStyle(
                     color: Color(0xFF9b9b9b),
                     fontSize: 12,
@@ -164,7 +169,7 @@ class _MineLoanRecordPageState extends State<MineLoanRecordPage> {
                 ),
                 SizedBox(width: 6),
                 Text(
-                  item.repay_amount.toString(),
+                  item.repayAmount.toString(),
                   style: TextStyle(
                     color: Color(0xFF9b9b9b),
                     fontSize: 12,

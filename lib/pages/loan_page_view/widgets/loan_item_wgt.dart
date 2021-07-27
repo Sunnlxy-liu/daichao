@@ -6,7 +6,8 @@ import 'package:daichao/utils/navigator_utils.dart';
 
 class LoanItemWgt extends StatefulWidget {
   final LoanList data;
-  LoanItemWgt(this.data);
+  final bool isLast;
+  LoanItemWgt(this.data, {this.isLast = false});
   @override
   _LoanItemWgtState createState() => _LoanItemWgtState();
 }
@@ -16,9 +17,9 @@ class _LoanItemWgtState extends State<LoanItemWgt> {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Container(
-        height: 96,
+        height: 110,
         decoration: BoxDecoration(color: Colors.white),
-        margin: EdgeInsets.only(bottom: 12),
+        padding: EdgeInsets.only(top: 12),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -54,8 +55,8 @@ class _LoanItemWgtState extends State<LoanItemWgt> {
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      width: 0.5,
-                      color: Color(0xFFDFDFDF),
+                      width: widget.isLast ? 0 : 0.5,
+                      color: widget.isLast ? Colors.white : Color(0xFFDFDFDF),
                     ),
                   ),
                 ),

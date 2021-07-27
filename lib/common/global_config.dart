@@ -30,10 +30,8 @@ class GlobalConfig {
     isFirstOpen = SpUtil.getBool("first_open", defValue: true);
 
     // 登录信息
-    // UserModel model = SpUtil.getObj<UserModel>("userModel", (v) => UserModel().fromMap(v), defValue: UserModel());
-    bool re = SpUtil.getBool("isLogin", defValue: false);
-    UserRespository().isLogin = re;
-    // UserRespository().setUserModel(model);
+    UserModel model = SpUtil.getObj<UserModel>("userModel", (Map v) => UserModel().fromMap(v), defValue: UserModel());
+    UserRespository().setUserModel(model);
   }
 
   static void setFirstOpen() {

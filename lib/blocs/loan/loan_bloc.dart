@@ -2,9 +2,7 @@ import 'package:daichao/common/bloc/base_bloc.dart';
 import 'package:daichao/common/bloc/base_event.dart';
 import 'package:daichao/common/bloc/base_state.dart';
 import 'package:daichao/common/net/net_api.dart';
-import 'package:daichao/data/repository/user_repository.dart';
 import 'package:daichao/model/loan_list_model.dart';
-import 'package:daichao/model/loan_record_model.dart';
 import 'package:daichao/model/loan_type_model.dart';
 
 class GetDataEvent extends BaseEvent {}

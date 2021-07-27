@@ -1,3 +1,8 @@
+import 'package:daichao/blocs/mine/my_address_bloc.dart';
+import 'package:daichao/common/bloc/base_state.dart';
+import 'package:daichao/common/bloc/bloc_builder_wgt.dart';
+import 'package:daichao/model/myaddress_model.dart';
+import 'package:daichao/widgets/page_no_data_wgt.dart';
 import 'package:flutter/material.dart';
 import 'package:daichao/pages/mine_page_view/address_detail.dart';
 import 'package:daichao/utils/colors_utils.dart';
@@ -12,7 +17,7 @@ class AddressListPage extends StatefulWidget {
 
 class _AddressListPageState extends State<AddressListPage> {
   GlobalKey<FormState> addressListKey = new GlobalKey<FormState>();
-
+  MyAddressBloc myaddressbloc = MyAddressBloc();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,36 +37,45 @@ class _AddressListPageState extends State<AddressListPage> {
       backgroundColor: ColorsUtils.pageBcakgroundColor,
       body: Stack(
         children: [
-          Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
+          BlocConsumerWgt<MyAddressBloc>(
+              bloc: myaddressbloc..add(GetMyAddressEvent()),
+              listenIf: [SuccessMyAddressState, NoDataState],
+              builder: (context, state) {
+                if (state is NoDataState) {
+                  return Center(
+                    child: Container(
+                      child: NoDataWgt(msg: state.msg),
+                    ),
+                  );
+                }
+                if (state is SuccessMyAddressState) {
+                  return Column(
                     children: [
-                      Container(
-                        height: 7,
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Container(
+                                height: 7,
+                              ),
+                              ListView.builder(
+                                padding: EdgeInsets.all(0),
+                                shrinkWrap: true, //范围内进行包裹（内容多高ListView就多高）
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: state.model.addressList.length,
+                                itemBuilder: (context, index) {
+                                  return _addressListItem(state.model.addressList[index]);
+                                },
+                              )
+                            ],
+                          ),
+                        ),
                       ),
-                      _addressListItem('刘徐阳', '15009291976', "陕西省 咸阳市 秦都区 陈阳寨街道 林凯城9号楼 陕西省 咸阳市 秦都区 陈阳寨街道 林凯城9号楼", true),
-                      _addressListItem('马云', '13088888888', "浙江省 杭州市 余杭区 文一西路969号 淘宝城一期", false),
-                      _addressListItem('马化腾', '13666666666', "广东省 深圳市 南山区 深南大道10000号", false),
-                      _addressListItem(
-                          '刘徐阳', '15009291976', "陕西省 咸阳市 秦都区 陈阳寨街道 林凯城9号楼 陕西省 咸阳市 秦都区 陈阳寨街道 林凯城9号楼", false),
-                      _addressListItem('马云', '13088888888', "浙江省 杭州市 余杭区 文一西路969号 淘宝城一期", false),
-                      _addressListItem('马化腾', '13666666666', "广东省 深圳市 南山区 深南大道10000号", false),
-                      _addressListItem(
-                          '刘徐阳', '15009291976', "陕西省 咸阳市 秦都区 陈阳寨街道 林凯城9号楼 陕西省 咸阳市 秦都区 陈阳寨街道 林凯城9号楼", false),
-                      _addressListItem('马云', '13088888888', "浙江省 杭州市 余杭区 文一西路969号 淘宝城一期", false),
-                      _addressListItem('马化腾', '13666666666', "广东省 深圳市 南山区 深南大道10000号", false),
-                      _addressListItem(
-                          '刘徐阳', '15009291976', "陕西省 咸阳市 秦都区 陈阳寨街道 林凯城9号楼 陕西省 咸阳市 秦都区 陈阳寨街道 林凯城9号楼", false),
-                      _addressListItem('马云', '13088888888', "浙江省 杭州市 余杭区 文一西路969号 淘宝城一期", false),
-                      _addressListItem('马化腾', '13666666666', "广东省 深圳市 南山区 深南大道10000号", false),
                     ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+                  );
+                }
+                return Container();
+              }),
           Positioned(
             left: 0,
             right: 0,
@@ -83,7 +97,13 @@ class _AddressListPageState extends State<AddressListPage> {
                   ),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22.5)),
                   onPressed: () {
-                    NavigatorUtils.pushPage(targPage: AddressDetailPage());
+                    NavigatorUtils.pushPage(
+                        targPage: AddressDetailPage(),
+                        dismissCallBack: (value) {
+                          if (value != null) {
+                            myaddressbloc.add(GetMyAddressEvent());
+                          }
+                        });
                   },
                 ),
               ),
@@ -94,7 +114,7 @@ class _AddressListPageState extends State<AddressListPage> {
     );
   }
 
-  Widget _addressListItem(String name, String tel, String detailAddress, bool isInit) {
+  Widget _addressListItem(AddressList address) {
     return Container(
       padding: EdgeInsets.only(left: 15, right: 15, top: 10, bottom: 10),
       decoration: BoxDecoration(
@@ -117,17 +137,17 @@ class _AddressListPageState extends State<AddressListPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        name,
+                        address.name,
                         style: TextStyle(fontSize: 14, color: ColorsUtils.cl12, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(width: 15),
                       Text(
-                        tel,
+                        address.mobile,
                         style: TextStyle(fontSize: 14, color: ColorsUtils.cl12, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(width: 5),
                       Offstage(
-                        offstage: !isInit,
+                        offstage: !(address.isDefault == 1 ? true : false),
                         child: Container(
                           height: 16,
                           padding: EdgeInsets.only(left: 5, right: 5),
@@ -146,7 +166,7 @@ class _AddressListPageState extends State<AddressListPage> {
                   ),
                   SizedBox(height: 5),
                   Text(
-                    detailAddress,
+                    address.country + address.province + address.city + address.area + address.address,
                     style: TextStyle(fontSize: 12, color: Color(0xFF8f96a3)),
                     maxLines: 2,
                     textAlign: TextAlign.start,
@@ -155,14 +175,28 @@ class _AddressListPageState extends State<AddressListPage> {
               ),
             ),
           ),
-          Container(
-            alignment: Alignment.centerRight,
-            width: 40,
-            height: 40,
-            child: Icon(
-              IconData(0xe658, fontFamily: 'Appicon'),
-              color: ColorsUtils.cl99,
-              size: 18,
+          InkWell(
+            onTap: () {
+              NavigatorUtils.pushPage(
+                  targPage: AddressDetailPage(
+                    address: address,
+                    title: '修改收货地址',
+                  ),
+                  dismissCallBack: (value) {
+                    if (value != null) {
+                      myaddressbloc.add(GetMyAddressEvent());
+                    }
+                  });
+            },
+            child: Container(
+              alignment: Alignment.centerRight,
+              width: 40,
+              height: 40,
+              child: Icon(
+                IconData(0xe658, fontFamily: 'Appicon'),
+                color: ColorsUtils.cl99,
+                size: 18,
+              ),
             ),
           ),
         ],

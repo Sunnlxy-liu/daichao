@@ -1,6 +1,5 @@
-import 'dart:convert';
-
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:daichao/data/repository/user_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:daichao/common/net/address.dart';
 import 'package:daichao/model/base_model.dart';
@@ -44,7 +43,7 @@ class NetUtils {
         sendTimeout: _sendTimeout,
       );
       // 所有接口公共的请求头设置
-      // baseOptions.headers['ClientVerion'] = "1.0.0"; // 请求头设置自定义参数
+      baseOptions.headers['token'] = UserRespository().userModel.token ?? ""; // 请求头设置token
 
       _dio = Dio(baseOptions);
       // 拦截器可以在请求之前，响应之前，以及错误之前做一些预处理
@@ -77,7 +76,7 @@ class NetUtils {
     Function(int, int) onSendProgress,
     Function(int, int) onReceiveProgress,
     List<dynamic> path,
-    Map<String, dynamic> params,
+    dynamic params,
   }) async {
     try {
       // 网络判断

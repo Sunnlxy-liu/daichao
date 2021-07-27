@@ -1,5 +1,3 @@
-import 'package:daichao/utils/sp_utils.dart';
-
 class DateFormatUtils {
   static final num oneMinute = 60000; //ONE_MINUTE
   static final num oneHour = 3600000; //ONE_HOUR

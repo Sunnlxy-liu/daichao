@@ -108,7 +108,7 @@ class MainMenusWgt extends StatelessWidget {
                 );
               } else {
                 // 未登录去登陆
-                if (index == 3 && !UserRespository().isLogin) {
+                if (index == 3 && !UserRespository().userModel.isLogin) {
                   NavigatorUtils.pushPage(
                     targPage: LoginPage(),
                   );

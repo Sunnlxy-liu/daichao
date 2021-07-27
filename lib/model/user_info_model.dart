@@ -57,6 +57,7 @@ class UserInfo {
   final String birthday;
   final int score;
   final int prevtime;
+  final double creditScore;
   final int loanCount;
   final String gradeNumber;
   final String token;
@@ -72,7 +73,7 @@ class UserInfo {
   final String position;
   final String income;
   final ConfirmeInfo confirmeInfo;
-  final String infoPercent;
+  final double infoPercent;
   final String creditReport;
   UserInfo({
     this.id,
@@ -85,6 +86,7 @@ class UserInfo {
     this.birthday,
     this.score,
     this.prevtime,
+    this.creditScore,
     this.loanCount,
     this.gradeNumber,
     this.token,
@@ -115,6 +117,7 @@ class UserInfo {
     String birthday,
     int score,
     int prevtime,
+    double creditScore,
     int loanCount,
     String gradeNumber,
     String token,
@@ -130,7 +133,7 @@ class UserInfo {
     String position,
     String income,
     ConfirmeInfo confirmeInfo,
-    String infoPercent,
+    double infoPercent,
     String creditReport,
   }) {
     return UserInfo(
@@ -144,6 +147,7 @@ class UserInfo {
       birthday: birthday ?? this.birthday,
       score: score ?? this.score,
       prevtime: prevtime ?? this.prevtime,
+      creditScore: creditScore ?? this.creditScore,
       loanCount: loanCount ?? this.loanCount,
       gradeNumber: gradeNumber ?? this.gradeNumber,
       token: token ?? this.token,
@@ -176,6 +180,7 @@ class UserInfo {
       'birthday': birthday,
       'score': score,
       'prevtime': prevtime,
+      'creditScore': creditScore,
       'loanCount': loanCount,
       'gradeNumber': gradeNumber,
       'token': token,
@@ -209,6 +214,7 @@ class UserInfo {
       score: map['score']?.toInt(),
       prevtime: map['prevtime']?.toInt(),
       loanCount: map['loanCount']?.toInt(),
+      creditScore: map['creditScore']?.toDouble(),
       gradeNumber: map['gradeNumber'],
       token: map['token'],
       user_id: map['user_id']?.toInt(),
@@ -223,7 +229,7 @@ class UserInfo {
       position: map['position'],
       income: map['income'],
       confirmeInfo: ConfirmeInfo.fromMap(map['confirmeInfo']),
-      infoPercent: map['infoPercent'],
+      infoPercent: map['infoPercent']?.toDouble(),
       creditReport: map['creditReport'],
     );
   }
@@ -234,7 +240,7 @@ class UserInfo {
 
   @override
   String toString() {
-    return 'UserInfo(id: $id, username: $username, nickname: $nickname, email: $email, mobile: $mobile, avatar: $avatar, gender: $gender, birthday: $birthday, score: $score, prevtime: $prevtime, loanCount: $loanCount, gradeNumber: $gradeNumber, token: $token, user_id: $user_id, createtime: $createtime, expiretime: $expiretime, expiresIn: $expiresIn, offenLive: $offenLive, education: $education, graduationTime: $graduationTime, startWorkTime: $startWorkTime, nowCompany: $nowCompany, position: $position, income: $income, confirmeInfo: $confirmeInfo, infoPercent: $infoPercent, creditReport: $creditReport)';
+    return 'UserInfo(id: $id, username: $username, nickname: $nickname, email: $email, mobile: $mobile, avatar: $avatar, gender: $gender, birthday: $birthday, score: $score, prevtime: $prevtime,creditScore: $creditScore, loanCount: $loanCount, gradeNumber: $gradeNumber, token: $token, user_id: $user_id, createtime: $createtime, expiretime: $expiretime, expiresIn: $expiresIn, offenLive: $offenLive, education: $education, graduationTime: $graduationTime, startWorkTime: $startWorkTime, nowCompany: $nowCompany, position: $position, income: $income, confirmeInfo: $confirmeInfo, infoPercent: $infoPercent, creditReport: $creditReport)';
   }
 
   @override
@@ -252,6 +258,7 @@ class UserInfo {
         other.birthday == birthday &&
         other.score == score &&
         other.prevtime == prevtime &&
+        other.creditScore == creditScore &&
         other.loanCount == loanCount &&
         other.gradeNumber == gradeNumber &&
         other.token == token &&
@@ -283,6 +290,7 @@ class UserInfo {
         birthday.hashCode ^
         score.hashCode ^
         prevtime.hashCode ^
+        creditScore.hashCode ^
         loanCount.hashCode ^
         gradeNumber.hashCode ^
         token.hashCode ^

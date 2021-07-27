@@ -1,8 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:daichao/blocs/loan/loan_detail_bloc.dart';
+import 'package:daichao/common/net/net_api.dart';
+import 'package:daichao/data/repository/user_repository.dart';
+import 'package:daichao/utils/colors_utils.dart';
+import 'package:daichao/utils/toast_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:daichao/common/bloc/bloc_builder_wgt.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/shims/dart_ui_real.dart';
 
 class LoanDetailPage extends StatefulWidget {
   final int id;
@@ -73,56 +78,187 @@ class _LoanDetailPageState extends State<LoanDetailPage> {
                     ),
                   ],
                 ),
-                Positioned(
-                  // alignment: Alignment.bottomCenter,
-                  bottom: 0,
-                  left: 0,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          offset: Offset(0.0, -1), //阴影xy轴偏移量
-                          blurRadius: .5, //阴影模糊程度
-                          spreadRadius: .5, //阴影扩散程度
-                        ),
-                      ],
-                    ),
-                    padding: EdgeInsets.only(
-                      left: 35,
-                      right: 35,
-                      top: 17.5,
-                      bottom: 17.5,
-                    ),
-                    child: RaisedButton(
-                      color: Colors.blue,
-                      highlightColor: Colors.blue[700],
-                      colorBrightness: Brightness.dark,
-                      splashColor: Theme.of(context).accentColor,
-                      child: Text(
-                        "立即申请",
-                        style: TextStyle(
-                          fontSize: 16,
-                          letterSpacing: 1,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22.5)),
-                      onPressed: () {
-                        // ....
-                      },
-                    ),
-                  ),
-                ),
+                //ApplyButton
+                _applayLoanButtonWgt(state)
               ],
             );
           } else {
             return SizedBox();
           }
         },
+      ),
+    );
+  }
+
+  Widget _applayLoanButtonWgt(state) {
+    return Positioned(
+      // alignment: Alignment.bottomCenter,
+      bottom: 0,
+      left: 0,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: 80,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              offset: Offset(0.0, -1), //阴影xy轴偏移量
+              blurRadius: .5, //阴影模糊程度
+              spreadRadius: .5, //阴影扩散程度
+            ),
+          ],
+        ),
+        padding: EdgeInsets.only(
+          left: 35,
+          right: 35,
+          top: 17.5,
+          bottom: 17.5,
+        ),
+        child: ElevatedButton(
+          // color: Colors.blue,
+          // highlightColor: Colors.blue[700],
+          // colorBrightness: Brightness.dark,
+          // splashColor: Theme.of(context).accentColor,
+          style: ButtonStyle(
+            shape: MaterialStateProperty.all(
+              StadiumBorder(
+                side: BorderSide(
+                  //设置 界面效果
+                  style: BorderStyle.solid,
+                  color: Theme.of(context).accentColor,
+                ),
+              ),
+            ),
+          ),
+          child: Text(
+            "立即申请",
+            style: TextStyle(
+              fontSize: 16,
+              letterSpacing: 1,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22.5)),
+          onPressed: () {
+            if (!UserRespository().userModel.isLogin) {
+              ToastUtils.showToastMsg("请您先登录");
+            } else {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true, //true为全屏，默认为false半屏
+                // 设置上面两个角为圆角
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                ),
+                enableDrag: true, // 设置是否可以随手指移动,默认为true
+                builder: (context) {
+                  List<String> amounts = state.info.amountJson.split(",");
+                  List<String> dates = state.info.dateJson.split(",");
+                  String amount = amounts[0];
+                  String date = dates[0];
+                  return Container(
+                    padding: EdgeInsets.only(left: 15, top: 20, bottom: 15, right: 15),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "借多钱",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Color(0xff202020),
+                            ),
+                          ),
+                        ),
+                        SelectItemUi(amounts, (str) => amount = str),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        Container(
+                          height: 1,
+                          color: ColorsUtils.lintSplitColor,
+                        ),
+                        SizedBox(
+                          height: 7,
+                        ),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "借多久",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Color(0xff202020),
+                            ),
+                          ),
+                        ),
+                        SelectItemUi(
+                          dates,
+                          (str) => date = str,
+                          isDate: true,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          color: Colors.white,
+                          padding: EdgeInsets.only(left: 20, right: 20),
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              ToastUtils.showLoadingToast(msg: "申请中...");
+                              try {
+                                await NetApi.applyLoan(
+                                  params: {
+                                    "loan_id": widget.id,
+                                    "loan_amount": amount,
+                                    "loan_date": date,
+                                  },
+                                );
+                                ToastUtils.showToastMsg("申请成功");
+                              } catch (error) {
+                                ToastUtils.showToastMsg("申请失败，请重试 ${error.msg}");
+                              }
+                              Future.delayed(Duration(seconds: 1)).then((value) {
+                                Navigator.pop(context);
+                              });
+                            },
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                StadiumBorder(
+                                  side: BorderSide(
+                                    //设置 界面效果
+                                    style: BorderStyle.solid,
+                                    color: Theme.of(context).accentColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            child: Container(
+                              height: 46,
+                              alignment: Alignment.center,
+                              child: Text(
+                                "立即申请",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  letterSpacing: 1,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            }
+          },
+        ),
       ),
     );
   }
@@ -370,23 +506,6 @@ class _LoanDetailPageState extends State<LoanDetailPage> {
   Widget _contentWgt(String str) {
     return Html(
       data: str,
-      customRender: {
-        "table": (context, child) {
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: (context.tree as TableLayoutElement).toWidget(context),
-          );
-        },
-        "bird": (RenderContext context, Widget child) {
-          return TextSpan(text: "鸟");
-        },
-        "flutter": (RenderContext context, Widget child) {
-          return FlutterLogo(
-            textColor: context.style.color,
-            size: context.style.fontSize.size * 5,
-          );
-        },
-      },
       customImageRenders: {
         networkSourceMatcher(domains: ["flutter.dev"]): (context, attributes, element) {
           return FlutterLogo(size: 36);
@@ -461,6 +580,56 @@ class _LoanSelectConditionsState extends State<LoanSelectConditions> {
             fontSize: 14,
             color: _currentIndex == _index ? Theme.of(context).primaryColor : Color(0xFF202020),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class SelectItemUi extends StatefulWidget {
+  final List<String> list;
+  final Function(String) onSelect;
+  final bool isDate;
+  const SelectItemUi(this.list, this.onSelect, {this.isDate = false, Key key}) : super(key: key);
+
+  @override
+  _SelectItemUiState createState() => _SelectItemUiState();
+}
+
+class _SelectItemUiState extends State<SelectItemUi> {
+  int _index = 0;
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      physics: BouncingScrollPhysics(),
+      child: Container(
+        margin: EdgeInsets.only(top: 7),
+        child: Row(
+          children: widget.list.asMap().keys.map((index) {
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  _index = index;
+                  widget.onSelect?.call(widget.list[index]);
+                });
+              },
+              child: Container(
+                width: 80,
+                height: 35,
+                margin: EdgeInsets.only(right: 10),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: _index == index ? Colors.blue[100] : Colors.grey[200],
+                  borderRadius: BorderRadius.circular(3),
+                ),
+                child: Text(
+                  "${widget.list[index]}${widget.isDate ? "个月" : ""}",
+                  style: TextStyle(fontSize: 15, color: _index == index ? Colors.blue : Color(0xff202020)),
+                ),
+              ),
+            );
+          }).toList(),
         ),
       ),
     );

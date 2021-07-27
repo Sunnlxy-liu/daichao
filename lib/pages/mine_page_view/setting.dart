@@ -3,7 +3,6 @@ import 'package:daichao/pages/mine_page_view/address_list.dart';
 import 'package:daichao/pages/mine_page_view/mine_help.dart';
 import 'package:daichao/utils/colors_utils.dart';
 import 'package:daichao/utils/navigator_utils.dart';
-import 'package:daichao/utils/utils.dart';
 import 'package:daichao/widgets/select_theme_color_wgt.dart';
 
 class SettingPage extends StatefulWidget {
